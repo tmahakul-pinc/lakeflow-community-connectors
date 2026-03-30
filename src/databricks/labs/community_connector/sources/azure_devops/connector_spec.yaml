@@ -1,0 +1,207 @@
+source_name: azure_devops
+display_name: Azure DevOps
+description: Ingest data from Azure DevOps Services REST API into Databricks.
+repo_url: https://github.com/wesley84/lakeflow-community-connectors
+
+connection:
+  options:
+    organization:
+      type: string
+      required: true
+      secret: false
+      label: Organization
+      description: Azure DevOps organization name from https://dev.azure.com/<organization>
+    personal_access_token:
+      type: string
+      required: true
+      secret: true
+      label: Personal access token
+      description: Azure DevOps PAT with the scopes required by the selected tables.
+    project:
+      type: string
+      required: false
+      secret: false
+      label: Project
+      description: Optional default Azure DevOps project name.
+
+external_options_allow_list:
+  - project
+  - repository_id
+  - pullrequest_id
+  - status_filter
+  - filter
+  - ids
+
+objects:
+  - name: projects
+    type: table
+    label: Projects
+    description: Azure DevOps projects.
+    table_configuration: {}
+
+  - name: repositories
+    type: table
+    label: Repositories
+    description: Azure DevOps Git repositories.
+    table_configuration:
+      project:
+        type: string
+        required: false
+        description: Project name.
+
+  - name: commits
+    type: table
+    label: Commits
+    description: Azure DevOps Git commits.
+    table_configuration:
+      project:
+        type: string
+        required: false
+        description: Project name.
+      repository_id:
+        type: string
+        required: false
+        description: Repository ID.
+
+  - name: pullrequests
+    type: table
+    label: Pull requests
+    description: Azure DevOps pull requests.
+    table_configuration:
+      project:
+        type: string
+        required: false
+        description: Project name.
+      repository_id:
+        type: string
+        required: false
+        description: Repository ID.
+      status_filter:
+        type: string
+        required: false
+        description: Pull request status filter.
+
+  - name: pullrequest_commits
+    type: table
+    label: Pull request commits
+    description: Commits associated with pull requests.
+    table_configuration:
+      project:
+        type: string
+        required: false
+      repository_id:
+        type: string
+        required: false
+      pullrequest_id:
+        type: string
+        required: false
+
+  - name: pullrequest_reviewers
+    type: table
+    label: Pull request reviewers
+    description: Reviewers for pull requests.
+    table_configuration:
+      project:
+        type: string
+        required: false
+      repository_id:
+        type: string
+        required: false
+      pullrequest_id:
+        type: string
+        required: false
+
+  - name: pullrequest_threads
+    type: table
+    label: Pull request threads
+    description: Discussion threads for pull requests.
+    table_configuration:
+      project:
+        type: string
+        required: false
+      repository_id:
+        type: string
+        required: false
+      pullrequest_id:
+        type: string
+        required: false
+
+  - name: pullrequest_workitems
+    type: table
+    label: Pull request work items
+    description: Work items linked to pull requests.
+    table_configuration:
+      project:
+        type: string
+        required: false
+      repository_id:
+        type: string
+        required: false
+      pullrequest_id:
+        type: string
+        required: false
+
+  - name: refs
+    type: table
+    label: Refs
+    description: Git refs.
+    table_configuration:
+      project:
+        type: string
+        required: false
+      repository_id:
+        type: string
+        required: false
+      filter:
+        type: string
+        required: false
+
+  - name: pushes
+    type: table
+    label: Pushes
+    description: Git pushes.
+    table_configuration:
+      project:
+        type: string
+        required: false
+      repository_id:
+        type: string
+        required: false
+
+  - name: users
+    type: table
+    label: Users
+    description: Azure DevOps users.
+    table_configuration: {}
+
+  - name: workitems
+    type: table
+    label: Work items
+    description: Azure DevOps work items by explicit IDs.
+    table_configuration:
+      ids:
+        type: string
+        required: false
+        description: Comma-separated list of work item IDs.
+
+  - name: workitem_revisions
+    type: table
+    label: Work item revisions
+    description: Work item revisions.
+    table_configuration:
+      ids:
+        type: string
+        required: false
+        description: Comma-separated list of work item IDs.
+      project:
+        type: string
+        required: false
+
+  - name: workitem_types
+    type: table
+    label: Work item types
+    description: Work item types.
+    table_configuration:
+      project:
+        type: string
+        required: false
